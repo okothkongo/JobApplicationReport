@@ -1,38 +1,54 @@
-<section class="phx-hero">
-  <h1><%= gettext "Welcome to %{name}!", name: "Phoenix" %></h1>
-  <p>Peace-of-mind from prototype to production</p>
-</section>
+  <div id="page">
+      <table class="job-applicants">
+        <thead>
+          <tr>
+            <th>Job</th>
+            <th>Applicant Name</th>
+            <th>Email Address</th>
+            <th>Website</th>
+            <th>Skills</th>
+            <th>Cover Letter Paragraph</th>
+          </tr>
+        </thead>
 
-<section class="row">
-  <article class="column">
-    <h2>Resources</h2>
-    <ul>
-      <li>
-        <a href="https://hexdocs.pm/phoenix/overview.html">Guides &amp; Docs</a>
-      </li>
-      <li>
-        <a href="https://github.com/phoenixframework/phoenix">Source</a>
-      </li>
-      <li>
-        <a href="https://github.com/phoenixframework/phoenix/blob/v1.5/CHANGELOG.md">v1.5 Changelog</a>
-      </li>
-    </ul>
-  </article>
-  <article class="column">
-    <h2>Help</h2>
-    <ul>
-      <li>
-        <a href="https://elixirforum.com/c/phoenix-forum">Forum</a>
-      </li>
-      <li>
-        <a href="https://webchat.freenode.net/?channels=elixir-lang">#elixir-lang on Freenode IRC</a>
-      </li>
-      <li>
-        <a href="https://twitter.com/elixirphoenix">Twitter @elixirphoenix</a>
-      </li>
-      <li>
-        <a href="https://elixir-slackin.herokuapp.com/">Elixir on Slack</a>
-      </li>
-    </ul>
-  </article>
-</section>
+        <tbody>
+        <%= for job <- @applications do%>
+        <tr>
+          <td  rowspan="<%=job.skill_count%>" class="job-name"><%= job.name%></td>
+          <td rowspan="<%=no_of_applicant_skills(first_applicant(job).skills) %>" class="applicant-name"><%= first_applicant_name(job)%></td>
+          <td rowspan="<%=no_of_applicant_skills(first_applicant(job).skills)%>"><a href="mailto:%= first_applicant(job).email%>"><%= first_applicant(job).email%></a></td>
+          <td rowspan="<%= no_of_applicant_skills(first_applicant(job).skills) %>"><a href="http://<%= first_applicant(job).website%>/"><%= first_applicant(job).website%></a></td>
+          <td><%= skill_of_first_applicant(job)%></td>
+          <td rowspan="<%=no_of_applicant_skills(first_applicant(job).skills) %>"><%= first_applicant(job).cover_letter%></td>
+        </tr>
+        <%= for skill <- rest_of_first_applicant_skills(job) do %>
+          <tr>
+          <td><%=skill.name%></td>
+          </tr>
+          <%end%>
+
+        <%= for applicant <- rest_of_applicants(job) do %>
+        <tr>
+          <td rowspan="<%=no_of_applicant_skills(applicant.skills)%>" class="applicant-name"><%=applicant.name%></td>
+          <td rowspan="<%=no_of_applicant_skills(applicant.skills)%>"><a href="mailto:<%=applicant.email%>"><%=applicant.email%></a></td>
+          <td rowspan="<%=no_of_applicant_skills(applicant.skills)%>"><a href="http://<%=applicant.website%>/"><%=applicant.website%></a></td>
+          <td><%=skill_of_first_of_remaining_applicants(applicant) %></td>
+          <td rowspan="<%=no_of_applicant_skills(applicant.skills)%>"><%=applicant.cover_letter%></td>
+        </tr>
+        <%= for skill <- rest_of_skills(applicant) do %>
+          <tr>
+          <td><%=skill.name%></td>
+          </tr>
+          <%end%>
+        <%end%>
+
+        <%end%>
+        </tbody>
+
+        <tfoot>
+          <tr>
+            <td colspan="6"><%= number_of_applicant(@applications) %> Applicants, <%=@number_of_unique_skills%> Unique Skills</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>

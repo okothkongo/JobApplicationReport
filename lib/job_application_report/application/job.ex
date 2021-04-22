@@ -2,6 +2,7 @@ defmodule JobApplicationReport.Application.Job do
   use Ecto.Schema
   import Ecto.Changeset
   alias JobApplicationReport.Application.Applicant
+
   schema "jobs" do
     field :name, :string
     field :skill_count, :integer, virtual: true
